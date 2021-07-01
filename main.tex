@@ -1,0 +1,127 @@
+\documentclass[12pt,a4paper]{scrartcl} 
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+\usepackage{misccorr}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\begin{document}
+	\begin{titlepage}
+		\begin{center}
+			\large
+			МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ
+			
+			Федеральное государственное бюджетное образовательное учреждение высшего образования
+			
+			\textbf{АДЫГЕЙСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ}
+			\vspace{0.25cm}
+			
+			Инженерно-физический факультет
+			
+			Кафедра автоматизированных систем обработки информации и управления
+			\vfill
+
+			\vfill
+			
+			\textsc{Отчет по практике}\\[5mm]
+			
+			{\LARGE \textit{Реализовать метод половинного деления для нахождения корня функции.}}
+			\bigskip
+			
+			1 курс, группа 1УТС
+		\end{center}
+		\vfill
+		
+		\newlength{\ML}
+		\settowidth{\ML}{«\underline{\hspace{0.7cm}}» \underline{\hspace{2cm}}}
+		\hfill\begin{minipage}{0.5\textwidth}
+			Выполнил:\\
+			\underline{\hspace{\ML}} А.\,В. Смирнов\\
+			«\underline{\hspace{0.7cm}}» \underline{\hspace{2cm}} 2021 г.
+		\end{minipage}%
+		\bigskip
+		
+		\hfill\begin{minipage}{0.5\textwidth}
+			Руководитель:\\
+			\underline{\hspace{\ML}} С.\,В. Теплоухов\\
+			«\underline{\hspace{0.7cm}}» \underline{\hspace{2cm}} 2021 г.
+		\end{minipage}%
+		\vfill
+		
+		\begin{center}
+			Майкоп, 2021 г.
+		\end{center}
+	\end{titlepage}
+\section{Текстовая формулировка задачи}
+\label{sec:exp:code}
+\begin{verbatim}
+Реализовать метод половинного деления для нахождения корня функции.
+Алгоритм:
+1)	Найдём значение x в середине отрезка: xM=(xL+xR)/2
+2)	Вычислим значение функции f(xM) в середине отрезка  xM:
+Если f(xM)=0 или, в действительных вычислениях,|f(xM)| <= Ef(x),где Ef(x) — 
+заданная точность по оси y, то корень найден.
+Иначе а(xM) != 0 или, в действительных вычислениях,|f(xM)| > Ef(x), то
+разобьём отрезок [xL,xR] на два равных отрезка: [xL,xM] и [xM,xR].
+3)	Теперь найдём новый отрезок, на котором функция меняет знак:
+Если значения функции на концах отрезка имеют противоположные знаки на левом
+отрезке, f(xL)*f(xM)<0,то, соответственно, корень находится внутри левого
+отрезка [xL,xM]. Тогда возьмём левый отрезок присвоением xR=xM, и повторим
+описанную процедуру до достижения требуемой точности Ef(x) по оси y.
+Иначе значения функции на концах отрезка имеют противоположные знаки на
+правом отрезке, f(xM)*f(xR)<0, то, соответственно, корень находится внутри
+правого отрезка [xM,xR]. Тогда возьмём правый отрезок присвоением xL=xM,
+и повторим описанную процедуру до достижения требуемой точности Ef(x) по
+оси y.
+\end{verbatim}
+\newpage
+\section{Код приложения}
+\label{sec:exp:code}
+\begin{verbatim}
+#include <iostream>
+using namespace std;
+double F(double x){
+return x*x-10*x+25;}
+double Root(double (*f)(double),double a,double b,double eps){
+double c;
+while((b-a)/2>eps){
+ c=(a+b)/2;
+ if((f(a)*f(c))>0) a=c;
+ else b=c;
+}
+return c;}
+int main(){
+double a,b,eps,x;
+cout << "interval: ";
+cin >> a;
+cin >> b;
+if(F(a)*F(b)>0){
+ cout << "Wrong interval!\n";
+ return 0;}
+cout << "eror: ";
+cin >> eps;
+x=Root(F,a,b,eps);
+cout << "x = " << x << endl;
+return 0;
+}
+\end{verbatim}
+\newpage
+\section{График}
+\label{sec:picexample}
+\begin{figure}[h]
+	\includegraphics[width=0.9\textwidth]{график.png}
+	\caption{График функции.}\label{fig:par}
+\end{figure}
+\newpage
+\section{Скриншот программы}
+\begin{figure}[h]
+	\includegraphics[width=0.9\textwidth]{код.png}
+	\caption{Пример работы программы.}\label{fig:par}
+\end{figure}
+\newpage
+\begin{thebibliography}{9}
+\bibitem{Knuth-2003}Кнут Д.Э. Всё про \TeX. \newblock --- Москва: Изд. Вильямс, 2003 г. 550~с.
+\bibitem{Lvovsky-2003}Львовский С.М. Набор и верстка в системе \LaTeX{}. \newblock --- 3-е издание, исправленное и дополненное, 2003 г.
+\bibitem{Voroncov-2005}Воронцов К.В. \LaTeX{} в примерах. 2005 г.
+\end{thebibliography}
+\end{document}
